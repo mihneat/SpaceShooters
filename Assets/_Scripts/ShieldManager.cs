@@ -34,7 +34,7 @@ public class ShieldManager : MonoBehaviour
         }
         else if (hp == 0)
         {
-            StartCoroutine(Disable(15.0f));
+            StartCoroutine(Disable(10.0f));
         }
     }
 
