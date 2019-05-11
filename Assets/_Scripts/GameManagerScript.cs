@@ -6,12 +6,12 @@ public class GameManagerScript : MonoBehaviour
 {
     public GameObject player1, player2;
     public GameObject player1Shoot, player2Shoot;
-    public GameObject bullet, gun1, gun2;
-    public float rotationSpeed, moveSpeed;
+    public GameObject bullet, missile, gun1, gun2;
+    public float rotationSpeed, moveSpeed, missileCooldown;
 
     private Camera mainCam;
     private GameObject shield1, shield2;
-    private bool canShootP1 = true, canShootP2 = true;
+    private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true;
 
     private void Start()
     {
@@ -32,9 +32,19 @@ public class GameManagerScript : MonoBehaviour
             GameObject instantiatedBullet = Instantiate(bullet, player1Shoot.transform.position, player1.transform.rotation);
 
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+            instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 2;
         }
 
+        if (Input.GetKey(KeyCode.Mouse1) && canMissileP1)
+        {
+            StartCoroutine(DisableMissileP1());
 
+            GameObject instantiatedBullet = Instantiate(missile, player1Shoot.transform.position, player1.transform.rotation);
+
+            instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+            instantiatedBullet.GetComponent<MissileBehaviour>().enemy = player2;
+            instantiatedBullet.GetComponent<MissileBehaviour>().playerToKill = 2;
+        }
 
         float dirHor, dirVer;
 
@@ -114,7 +124,7 @@ public class GameManagerScript : MonoBehaviour
         Vector2 dir = new Vector2(mousePos.x - player1.transform.position.x, mousePos.y - player1.transform.position.y);
         dir.Normalize();
 
-        player1Shoot.transform.position = new Vector2(player1.transform.position.x, player1.transform.position.y) + 2 * dir;
+        player1Shoot.transform.position = new Vector2(player1.transform.position.x, player1.transform.position.y) + dir;
         player1.transform.up = dir;
 
 
@@ -129,6 +139,7 @@ public class GameManagerScript : MonoBehaviour
             GameObject instantiatedBullet = Instantiate(bullet, player2Shoot.transform.position, player2.transform.rotation);
             // instantiatedBullet.GetComponent<BulletBehaviour>().speed *= -1;
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f, 1.0f);
+            instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 1;
             //instantiatedBullet.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
         }
 
@@ -202,5 +213,20 @@ public class GameManagerScript : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         canShootP2 = true;
+    }
+
+    IEnumerator DisableMissileP1()
+    {
+        canMissileP1 = false;
+        yield return new WaitForSeconds(missileCooldown);
+        canMissileP1 = true;
+        
+    }
+
+    IEnumerator DisableMissileP2()
+    {
+        canMissileP2 = false;
+        yield return new WaitForSeconds(missileCooldown);
+        canMissileP2 = true;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletBehaviour : MonoBehaviour
 {
     public float speed;
+    public int playerToKill;
 
     private GameObject colliderObj;
 
@@ -27,7 +28,7 @@ public class BulletBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Shield")
+        if (collision.gameObject.tag == "Shield" && playerToKill == 1)
         {
             colliderObj = collision.gameObject;
 
@@ -35,7 +36,21 @@ public class BulletBehaviour : MonoBehaviour
 
             Destroy(gameObject);
         }
-        else if (collision.gameObject.tag == "Player")
+        else if (collision.gameObject.tag == "Player" && playerToKill == 1)
+        {
+            colliderObj = collision.gameObject;
+
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.tag == "Shield2" && playerToKill == 2)
+        {
+            colliderObj = collision.gameObject;
+
+            colliderObj.GetComponent<ShieldManager>().LoseHP(1);
+
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.tag == "Player2" && playerToKill == 2)
         {
             colliderObj = collision.gameObject;
 

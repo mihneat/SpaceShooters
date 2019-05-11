@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shield
+  - Shield2
+  - Player2
   layers:
   - Default
   - TransparentFX
