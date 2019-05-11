@@ -8,46 +8,46 @@ public class PlayerManager : MonoBehaviour
 
     [HideInInspector]
     public int hp;
-    public GameObject HealthP1, HealthP2;
+    public GameObject Health;
     public GameObject maps;
 
     private BoxCollider2D bc;
     private SpriteRenderer sr;
-    private GameObject HP3P1, HP2P1, HP1P1;
+    private GameObject HP3, HP2, HP1;
 
     private void Start()
     {
         bc = gameObject.GetComponent<BoxCollider2D>();
         sr = gameObject.GetComponent<SpriteRenderer>();
 
-        HP1P1 = HealthP1.transform.GetChild(0).gameObject;
-        HP2P1 = HealthP1.transform.GetChild(1).gameObject;
-        HP3P1 = HealthP1.transform.GetChild(2).gameObject;
+        HP1 = Health.transform.GetChild(0).gameObject;
+        HP2 = Health.transform.GetChild(1).gameObject;
+        HP3 = Health.transform.GetChild(2).gameObject;
 
         hp = maxHp;
     }
 
-    public void LoseHP(int amount, int playerNumber)
+    public void LoseHP(int amount)
     {
         hp = Mathf.Max(hp - amount, 0);
 
         if (hp == 2)
         {
-            HP3P1.SetActive(false);
+            HP3.SetActive(false);
 
             maps.GetComponent<MapManager>().ChooseLevel();
             RegainShields();
         }
         else if (hp == 1)
         {
-            HP2P1.SetActive(false);
+            HP2.SetActive(false);
 
             maps.GetComponent<MapManager>().ChooseLevel();
             RegainShields();
         }
         else if (hp == 0)
         {
-            HP1P1.SetActive(false);
+            HP1.SetActive(false);
 
             GameManagerScript.EndGame();
         }
