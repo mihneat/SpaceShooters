@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
     public int hp;
     public GameObject Health;
     public GameObject maps;
+    public GameObject gameManager;
 
     private BoxCollider2D bc;
     private SpriteRenderer sr;

@@ -14,9 +14,6 @@ public class MapManager : MonoBehaviour
         noOfMaps = transform.childCount;
 
         CreateOrder();
-
-        for (int i = 1; i <= noOfMaps; i++)
-            Debug.Log(order[i]);
     }
 
     private void CreateOrder()

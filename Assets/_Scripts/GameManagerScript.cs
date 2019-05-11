@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -10,12 +11,13 @@ public class GameManagerScript : MonoBehaviour
     public GameObject bullet, missile, gun1, gun2;
     public GameObject spriteMask;
     public GameObject maps;
-
+    public TMP_Text timeText, roundText;
     public float rotationSpeed, moveSpeed, missileCooldown;
     
     private Camera mainCam;
     private GameObject shield1, shield2;
     private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true;
+    private float initialTime, elapsedSeconds, elapsedMinutes, elapsedHours;
 
     private void Start()
     {
@@ -24,6 +26,8 @@ public class GameManagerScript : MonoBehaviour
         shield1 = player1.transform.GetChild(0).gameObject;
         shield2 = player2.transform.GetChild(0).gameObject;
 
+        initialTime = Time.time;
+
         maps.GetComponent<MapManager>().ChooseLevel();
 
         StartCoroutine(DisableMissileP1());
@@ -31,6 +35,20 @@ public class GameManagerScript : MonoBehaviour
 
     private void Update()
     {
+        roundText.text = "Round " + (maps.GetComponent<MapManager>().roundNumber - 1);
+
+        int elapsedTime = Mathf.FloorToInt(Time.time - initialTime);
+        elapsedSeconds = elapsedTime % 60;
+        elapsedMinutes = (elapsedTime / 60) % 60;
+        elapsedHours = (elapsedTime / 3600) % 60;
+
+        if (elapsedHours > 0) timeText.text = "You should probably stop playing.";
+        else if (elapsedMinutes > 0) timeText.text = "Elasped Time:\n" + elapsedMinutes + "m " + elapsedSeconds + "s";
+        else timeText.text = "Elasped Time:\n" + elapsedSeconds + "s";
+
+
+
+
         #region Player 1 Movement
 
         if (Input.GetKey(KeyCode.Mouse0) && canShootP1)
@@ -210,6 +228,11 @@ public class GameManagerScript : MonoBehaviour
         shield2.transform.Rotate(new Vector3(0.0f, 0.0f, rDir2 * rotationSpeed) * Time.deltaTime * 50);
         // player2.transform.Rotate(new Vector3(0.0f, 0.0f, 2*rDir2 * rotationSpeed) * Time.deltaTime * 50);
         #endregion
+    }
+
+    public void StartRound()
+    {
+        player1.transform.position = Vector3.zero;
     }
 
     public static void EndGame()
