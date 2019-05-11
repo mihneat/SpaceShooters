@@ -60,7 +60,11 @@ public class BulletBehaviour : MonoBehaviour
 
             Destroy(gameObject);
         }
-        else if (collision.gameObject.tag == "Walls" || collision.gameObject.tag == "MapWalls")
+        else if (collision.gameObject.tag == "MapWalls")
+        {
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.tag == "Walls")
         {
             Destroy(gameObject);
         }
