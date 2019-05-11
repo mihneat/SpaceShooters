@@ -1216,7 +1216,6 @@ Transform:
   - {fileID: 1871452264}
   - {fileID: 1828075239}
   - {fileID: 668609368}
-  - {fileID: 1543060241}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -3679,6 +3678,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3436901776449278343, guid: 3297fba24b95b5d4eba4ad47b29c12af,
+        type: 3}
+      propertyPath: isRotating
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3436901776449278343, guid: 3297fba24b95b5d4eba4ad47b29c12af,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 1510751230144018168, guid: 3297fba24b95b5d4eba4ad47b29c12af,
         type: 3}
       propertyPath: m_BodyType
@@ -3698,16 +3707,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsTrigger
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3436901776449278343, guid: 3297fba24b95b5d4eba4ad47b29c12af,
-        type: 3}
-      propertyPath: isRotating
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3436901776449278343, guid: 3297fba24b95b5d4eba4ad47b29c12af,
-        type: 3}
-      propertyPath: rotationSpeed
-      value: -2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3297fba24b95b5d4eba4ad47b29c12af, type: 3}
@@ -5345,6 +5344,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3436901776449278343, guid: 3297fba24b95b5d4eba4ad47b29c12af,
+        type: 3}
+      propertyPath: isRotating
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1510751230144018168, guid: 3297fba24b95b5d4eba4ad47b29c12af,
         type: 3}
       propertyPath: m_BodyType
@@ -5364,11 +5368,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsTrigger
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3436901776449278343, guid: 3297fba24b95b5d4eba4ad47b29c12af,
-        type: 3}
-      propertyPath: isRotating
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3297fba24b95b5d4eba4ad47b29c12af, type: 3}
@@ -7586,12 +7585,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1543060240}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.25, z: 0}
-  m_LocalScale: {x: 0.308025, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.25000003, z: 0}
+  m_LocalScale: {x: 0.30802512, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 167166224}
-  m_RootOrder: 3
+  m_Father: {fileID: 1828075239}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1543060242
 SpriteRenderer:
@@ -7681,6 +7680,7 @@ MonoBehaviour:
   missile: {fileID: 1438075180076050607, guid: a50ee685f3e8f4641822297f0083f194, type: 3}
   gun1: {fileID: 1217379137}
   gun2: {fileID: 1543060240}
+  circle2: {fileID: 1828075238}
   spriteMask: {fileID: 2113844067}
   maps: {fileID: 1794127955}
   ammoParent: {fileID: 1105525380}
@@ -9103,7 +9103,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children: [{fileID: 1543060241}]
   m_Father: {fileID: 167166224}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

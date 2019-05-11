@@ -9,7 +9,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject player1, player2;
     public GameObject player1Spawn, player2Spawn;
     public GameObject player1Shoot, player2Shoot;
-    public GameObject bullet, missile, gun1, gun2;
+    public GameObject bullet, missile, gun1, gun2, circle2;
     public GameObject spriteMask;
     public GameObject maps;
     public GameObject ammoParent;
@@ -79,6 +79,8 @@ public class GameManagerScript : MonoBehaviour
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
             instantiatedBullet.GetComponent<MissileBehaviour>().enemy = player2;
             instantiatedBullet.GetComponent<MissileBehaviour>().playerToKill = 2;
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(0.0f, 1.0f, 0.0f, 0.25f);
         }
 
         float dirHor, dirVer;
@@ -170,11 +172,11 @@ public class GameManagerScript : MonoBehaviour
 
         #region Player 2 Movement
 
-        if (Input.GetKey(KeyCode.I) && canShootP2)
+        if ((Input.GetAxis("JoystickTrigger") > 0 || Input.GetKey(KeyCode.Joystick1Button0))&& canShootP2)
         {
             StartCoroutine(DisableGunP2());
 
-            GameObject instantiatedBullet = Instantiate(bullet, player2Shoot.transform.position, player2.transform.rotation, ammoParent.transform);
+            GameObject instantiatedBullet = Instantiate(bullet, player2Shoot.transform.position, circle2.transform.rotation, ammoParent.transform);
 
             player2.GetComponent<AudioSource>().Play();
             // instantiatedBullet.GetComponent<BulletBehaviour>().speed *= -1;
@@ -188,26 +190,16 @@ public class GameManagerScript : MonoBehaviour
         // instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
 
 
-        float dir2;
+        Vector3 translation = new Vector3(Input.GetAxisRaw("JoystickVertical") * -1, Input.GetAxisRaw("JoystickHorizontal") * -1, 0.0f);
+        translation *= (moveSpeed * Time.deltaTime * 40);
+        player2.transform.Translate(translation);
 
-        if (Input.GetKey(KeyCode.J) && Input.GetKey(KeyCode.L))
-        {
-            dir2 = 0.0f;
-        }
-        else if (Input.GetKey(KeyCode.L))
-        {
-            dir2 = 1.0f;
-        }
-        else if (Input.GetKey(KeyCode.J))
-        {
-            dir2 = -1.0f;
-        }
-        else
-        {
-            dir2 = 0.0f;
-        }
+        //Vector2 dir2 = new Vector2(mousePos.x - player1.transform.position.x, mousePos.y - player1.transform.position.y);
+        Vector2 dir2 = new Vector2(Input.GetAxis("JoystickGunHorizontal"), Input.GetAxis("JoystickGunVertical") * -1);
 
-        player2.transform.Translate(new Vector3(dir2 * moveSpeed, 0.0f, 0.0f) * Time.deltaTime * 50, Space.World);
+        player2Shoot.transform.position = new Vector2(player2.transform.position.x, player2.transform.position.y) + dir2;
+        circle2.transform.up = dir2;
+        
 
         float x2, y2;
 
