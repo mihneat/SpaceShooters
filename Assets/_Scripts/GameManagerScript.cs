@@ -14,6 +14,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject maps;
     public GameObject ammoParent;
     public TMP_Text timeText, roundText;
+    public GameObject victory1Text, victory2Text;
     public float rotationSpeed, moveSpeed, missileCooldown;
     
     private Camera mainCam;
@@ -49,6 +50,8 @@ public class GameManagerScript : MonoBehaviour
         else timeText.text = "Elasped Time:\n" + elapsedSeconds + "s";
 
 
+
+        if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
 
 
         #region Player 1 Movement
@@ -285,11 +288,37 @@ public class GameManagerScript : MonoBehaviour
 
         loser.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
         maps.GetComponent<MapManager>().ChooseLevel();
+        StartRound();
     }
 
-    public static void EndGame()
+    public void EndGame(Transform loser)
     {
-        SceneManager.LoadScene("MainScene");
+        if (loser.GetChild(1).tag == "Player")
+        {
+            canShootP1 = false;
+            canMissileP1 = false;
+
+            loser.GetChild(0).gameObject.SetActive(false);
+            loser.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
+            loser.GetChild(1).GetComponent<CircleCollider2D>().enabled = false;
+            loser.GetChild(3).GetComponent<SpriteRenderer>().enabled = false;
+
+            victory2Text.SetActive(true);
+        }
+        else if (loser.GetChild(1).tag == "Player2")
+        {
+            canShootP2 = false;
+            canMissileP2 = false;
+
+            loser.GetChild(0).gameObject.SetActive(false);
+            loser.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
+            loser.GetChild(1).GetComponent<CircleCollider2D>().enabled = false;
+            loser.GetChild(3).GetComponent<SpriteRenderer>().enabled = false;
+
+            victory1Text.SetActive(true);
+        }
+
+        // SceneManager.LoadScene("MainScene");
     }
 
     IEnumerator DisableGunP1()

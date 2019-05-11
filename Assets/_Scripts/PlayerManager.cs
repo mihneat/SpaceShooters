@@ -48,7 +48,7 @@ public class PlayerManager : MonoBehaviour
         {
             HP1.SetActive(false);
 
-            GameManagerScript.EndGame();
+            gameManager.GetComponent<GameManagerScript>().EndGame(transform.parent);
         }
     }
 
