@@ -52,6 +52,7 @@ public class GameManagerScript : MonoBehaviour
 
 
         if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
+        if (Input.GetKeyDown(KeyCode.U)) SceneManager.LoadScene("MenuScene");
 
 
         #region Player 1 Movement
@@ -245,17 +246,18 @@ public class GameManagerScript : MonoBehaviour
         {
             canShootP1 = false;
             canMissileP1 = false;
+            loser.transform.GetChild(3).GetComponent<SpriteRenderer>().enabled = false;
         }
         else if (loser.transform.GetChild(1).tag == "Player2")
         {
             canShootP2 = false;
             canMissileP2 = false;
+            loser.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         }
 
         loser.transform.GetChild(0).gameObject.SetActive(false);
         loser.transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
         loser.transform.GetChild(1).GetComponent<CircleCollider2D>().enabled = false;
-        loser.transform.GetChild(3).GetComponent<SpriteRenderer>().enabled = false;
 
         yield return new WaitForSeconds(4.0f);
 
@@ -266,17 +268,18 @@ public class GameManagerScript : MonoBehaviour
         {
             canShootP1 = true;
             canMissileP1 = true;
+            loser.transform.GetChild(3).GetComponent<SpriteRenderer>().enabled = true;
         }
         else if (loser.transform.GetChild(1).tag == "Player2")
         {
             canShootP2 = true;
             canMissileP2 = true;
+            loser.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
         }
 
         loser.transform.GetChild(0).gameObject.SetActive(true);
         loser.transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = true;
         loser.transform.GetChild(1).GetComponent<CircleCollider2D>().enabled = true;
-        loser.transform.GetChild(3).GetComponent<SpriteRenderer>().enabled = true;
 
         loser.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
         maps.GetComponent<MapManager>().ChooseLevel();
@@ -305,7 +308,7 @@ public class GameManagerScript : MonoBehaviour
             loser.GetChild(0).gameObject.SetActive(false);
             loser.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
             loser.GetChild(1).GetComponent<CircleCollider2D>().enabled = false;
-            loser.GetChild(3).GetComponent<SpriteRenderer>().enabled = false;
+            loser.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 
             victory1Text.SetActive(true);
         }
