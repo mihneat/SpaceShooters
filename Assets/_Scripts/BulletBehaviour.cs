@@ -40,6 +40,8 @@ public class BulletBehaviour : MonoBehaviour
         {
             colliderObj = collision.gameObject;
 
+            colliderObj.GetComponent<PlayerManager>().LoseHP(1);
+
             Destroy(gameObject);
         }
         else if (collision.gameObject.tag == "Shield2" && playerToKill == 2)
@@ -54,6 +56,12 @@ public class BulletBehaviour : MonoBehaviour
         {
             colliderObj = collision.gameObject;
 
+            colliderObj.GetComponent<PlayerManager>().LoseHP(1);
+
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.tag == "Walls" || collision.gameObject.tag == "MapWalls")
+        {
             Destroy(gameObject);
         }
     }

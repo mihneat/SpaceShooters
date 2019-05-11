@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
     public GameObject player1, player2;
     public GameObject player1Shoot, player2Shoot;
     public GameObject bullet, missile, gun1, gun2;
-    public float rotationSpeed, moveSpeed, missileCooldown;
+    public GameObject spriteMask;
 
+    public float rotationSpeed, moveSpeed, missileCooldown;
+    
     private Camera mainCam;
     private GameObject shield1, shield2;
     private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true;
@@ -19,6 +22,8 @@ public class GameManagerScript : MonoBehaviour
 
         shield1 = player1.transform.GetChild(0).gameObject;
         shield2 = player2.transform.GetChild(0).gameObject;
+
+        StartCoroutine(DisableMissileP1());
     }
 
     private void Update()
@@ -35,11 +40,11 @@ public class GameManagerScript : MonoBehaviour
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 2;
         }
 
-        if (Input.GetKey(KeyCode.Mouse1) && canMissileP1)
+        if (Input.GetKeyDown(KeyCode.Mouse1) && canMissileP1)
         {
             StartCoroutine(DisableMissileP1());
 
-            GameObject instantiatedBullet = Instantiate(missile, player1Shoot.transform.position, player1.transform.rotation);
+            GameObject instantiatedBullet = Instantiate(missile, player1Shoot.transform.position, Quaternion.identity);
 
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
             instantiatedBullet.GetComponent<MissileBehaviour>().enemy = player2;
@@ -85,7 +90,7 @@ public class GameManagerScript : MonoBehaviour
                 dirVer = 0.0f;
             }
         }
-
+        
         player1.transform.Translate(new Vector3(dirHor * moveSpeed, dirVer * moveSpeed, 0.0f) * Time.deltaTime * 50, Space.World);
 
         float x1, y1;
@@ -98,7 +103,8 @@ public class GameManagerScript : MonoBehaviour
 
         float rDir = rotationSpeed;
 
-        /*if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.E))
+        {
+            /*if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.E))
         {
             rDir = 0.0f;
         }
@@ -114,6 +120,8 @@ public class GameManagerScript : MonoBehaviour
         {
             rDir = 0.0f;
         }*/
+        }
+
 
         shield1.transform.Rotate(new Vector3(0.0f, 0.0f, rDir * rotationSpeed) * Time.deltaTime * 50);
         // player1.transform.Rotate(new Vector3(0.0f, 0.0f, 2*rDir * rotationSpeed) * Time.deltaTime * 50);
@@ -197,11 +205,16 @@ public class GameManagerScript : MonoBehaviour
         #endregion
     }
 
+    public static void EndGame()
+    {
+        SceneManager.LoadScene("MainScene");
+    }
+
     IEnumerator DisableGunP1()
     {
         canShootP1 = false;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.25f);
 
         canShootP1 = true;
     }
@@ -210,7 +223,7 @@ public class GameManagerScript : MonoBehaviour
     {
         canShootP2 = false;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
 
         canShootP2 = true;
     }
@@ -218,7 +231,11 @@ public class GameManagerScript : MonoBehaviour
     IEnumerator DisableMissileP1()
     {
         canMissileP1 = false;
+
+        spriteMask.transform.parent.GetComponent<Animator>().Play("New Animation");
+
         yield return new WaitForSeconds(missileCooldown);
+        
         canMissileP1 = true;
         
     }

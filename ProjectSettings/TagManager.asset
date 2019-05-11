@@ -7,6 +7,8 @@ TagManager:
   - Shield
   - Shield2
   - Player2
+  - Walls
+  - MapWalls
   layers:
   - Default
   - TransparentFX

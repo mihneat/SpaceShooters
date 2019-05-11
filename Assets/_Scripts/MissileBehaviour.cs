@@ -27,14 +27,14 @@ public class MissileBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 dir = (Vector2)enemy.transform.position - rb.position;
+        Vector2 dir = rb.position - (Vector2)enemy.transform.position;
 
         dir.Normalize();
 
-        float rotateAmount = Vector3.Cross(dir, transform.up).z;
+        float rotateAmount = Vector3.Cross(dir, transform.right).z;
 
         rb.angularVelocity = rotateAmount * rotateSpeed;
-        rb.velocity = transform.up * speed;
+        rb.velocity = transform.right * speed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -67,6 +67,20 @@ public class MissileBehaviour : MonoBehaviour
 
             Destroy(gameObject);
         }
-        //"I don't pay you to put evil notions in my head. Those already there don't need company" -Tyrion Lannister, GoT season 3
+        else if (collision.gameObject.tag == "MapWalls")
+        {
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.tag == "Walls")
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log(collision.gameObject.name);
+        
     }
 }

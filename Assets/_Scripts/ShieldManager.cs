@@ -38,6 +38,15 @@ public class ShieldManager : MonoBehaviour
         }
     }
 
+    public void RegainShield()
+    {
+        StopAllCoroutines();
+
+        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1.0f);
+        hp = maxHp;
+        bc.enabled = true;
+    }
+
     IEnumerator Disable(float timeToWaitFor)
     {
         bc.enabled = false;
