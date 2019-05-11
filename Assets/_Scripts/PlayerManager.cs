@@ -8,7 +8,8 @@ public class PlayerManager : MonoBehaviour
 
     [HideInInspector]
     public int hp;
-    public GameObject HealthP1;
+    public GameObject HealthP1, HealthP2;
+    public GameObject maps;
 
     private BoxCollider2D bc;
     private SpriteRenderer sr;
@@ -26,7 +27,7 @@ public class PlayerManager : MonoBehaviour
         hp = maxHp;
     }
 
-    public void LoseHP(int amount)
+    public void LoseHP(int amount, int playerNumber)
     {
         hp = Mathf.Max(hp - amount, 0);
 
@@ -34,12 +35,14 @@ public class PlayerManager : MonoBehaviour
         {
             HP3P1.SetActive(false);
 
+            maps.GetComponent<MapManager>().ChooseLevel();
             RegainShields();
         }
         else if (hp == 1)
         {
             HP2P1.SetActive(false);
 
+            maps.GetComponent<MapManager>().ChooseLevel();
             RegainShields();
         }
         else if (hp == 0)

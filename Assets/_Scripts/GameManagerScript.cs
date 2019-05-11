@@ -9,6 +9,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject player1Shoot, player2Shoot;
     public GameObject bullet, missile, gun1, gun2;
     public GameObject spriteMask;
+    public GameObject maps;
 
     public float rotationSpeed, moveSpeed, missileCooldown;
     
@@ -22,6 +23,8 @@ public class GameManagerScript : MonoBehaviour
 
         shield1 = player1.transform.GetChild(0).gameObject;
         shield2 = player2.transform.GetChild(0).gameObject;
+
+        maps.GetComponent<MapManager>().ChooseLevel();
 
         StartCoroutine(DisableMissileP1());
     }
@@ -38,6 +41,8 @@ public class GameManagerScript : MonoBehaviour
 
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 2;
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(0.0f, 1.0f, 0.0f, 0.25f);
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && canMissileP1)
@@ -150,6 +155,8 @@ public class GameManagerScript : MonoBehaviour
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 1;
             //instantiatedBullet.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
         }
+
+        // instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
 
 
         float dir2;
