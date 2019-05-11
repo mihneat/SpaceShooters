@@ -4,34 +4,49 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
-    private List<GameObject> maps = new List<GameObject>();
-    private int remaining = 5, randomNumber;
+    public int roundNumber = 1;
+
+    private int[] order = new int[10];
+    private int noOfMaps;
 
     private void Awake()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        noOfMaps = transform.childCount;
+
+        CreateOrder();
+
+        for (int i = 1; i <= noOfMaps; i++)
+            Debug.Log(order[i]);
+    }
+
+    private void CreateOrder()
+    {
+        for (int i = 1; i <= noOfMaps; i++)
+            order[i] = i - 1;
+
+        for (int i = noOfMaps; i >= 2; i--)
         {
-            GameObject currentMap = transform.GetChild(i).gameObject;
-            maps.Add(currentMap);
+            int randomMap = (Random.Range(1, i - 1) * Random.Range(1, i - 1)) % (i - 1) + 1;
+
+            int x = order[randomMap];
+            order[randomMap] = order[i];
+            order[i] = x;
         }
     }
 
     public void ChooseLevel()
     {
-        if (remaining < 5)
+        if (roundNumber == 1)
         {
-            maps.RemoveAt(randomNumber);
-            Destroy(transform.GetChild(randomNumber).gameObject);
+            transform.GetChild(order[roundNumber]).gameObject.SetActive(true);
+            roundNumber++;
         }
-
-        if (remaining >= 0)
+        else if (roundNumber <= 5)
         {
-            randomNumber = Random.Range(0, remaining);
-            remaining--;
+            transform.GetChild(order[roundNumber - 1]).gameObject.SetActive(false);
+            transform.GetChild(order[roundNumber]).gameObject.SetActive(true);
 
-            transform.GetChild(randomNumber).gameObject.SetActive(true);
+            roundNumber++;
         }
-
-        Debug.Log(randomNumber + " is the random number!");
     }
 }
