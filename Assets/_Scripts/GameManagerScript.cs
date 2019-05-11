@@ -7,10 +7,12 @@ using TMPro;
 public class GameManagerScript : MonoBehaviour
 {
     public GameObject player1, player2;
+    public GameObject player1Spawn, player2Spawn;
     public GameObject player1Shoot, player2Shoot;
     public GameObject bullet, missile, gun1, gun2;
     public GameObject spriteMask;
     public GameObject maps;
+    public GameObject ammoParent;
     public TMP_Text timeText, roundText;
     public float rotationSpeed, moveSpeed, missileCooldown;
     
@@ -55,7 +57,9 @@ public class GameManagerScript : MonoBehaviour
         {
             StartCoroutine(DisableGunP1());
 
-            GameObject instantiatedBullet = Instantiate(bullet, player1Shoot.transform.position, player1.transform.rotation);
+            GameObject instantiatedBullet = Instantiate(bullet, player1Shoot.transform.position, player1.transform.rotation, ammoParent.transform);
+
+            player1.GetComponent<AudioSource>().Play();
 
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 2;
@@ -67,7 +71,7 @@ public class GameManagerScript : MonoBehaviour
         {
             StartCoroutine(DisableMissileP1());
 
-            GameObject instantiatedBullet = Instantiate(missile, player1Shoot.transform.position, Quaternion.identity);
+            GameObject instantiatedBullet = Instantiate(missile, player1Shoot.transform.position, Quaternion.identity, ammoParent.transform);
 
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
             instantiatedBullet.GetComponent<MissileBehaviour>().enemy = player2;
@@ -163,14 +167,18 @@ public class GameManagerScript : MonoBehaviour
 
         #region Player 2 Movement
 
-        if (Input.GetKeyDown(KeyCode.I) && canShootP2)
+        if (Input.GetKey(KeyCode.I) && canShootP2)
         {
             StartCoroutine(DisableGunP2());
 
-            GameObject instantiatedBullet = Instantiate(bullet, player2Shoot.transform.position, player2.transform.rotation);
+            GameObject instantiatedBullet = Instantiate(bullet, player2Shoot.transform.position, player2.transform.rotation, ammoParent.transform);
+
+            player2.GetComponent<AudioSource>().Play();
             // instantiatedBullet.GetComponent<BulletBehaviour>().speed *= -1;
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f, 1.0f);
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 1;
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.5f);
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
             //instantiatedBullet.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
         }
 
@@ -232,7 +240,51 @@ public class GameManagerScript : MonoBehaviour
 
     public void StartRound()
     {
-        player1.transform.position = Vector3.zero;
+        player1.transform.position = player1Spawn.transform.position;
+        player2.transform.position = player2Spawn.transform.position;
+    }
+
+    public IEnumerator EndRound(GameObject loser)
+    {
+        if (loser.transform.GetChild(1).tag == "Player")
+        {
+            canShootP1 = false;
+            canMissileP1 = false;
+        }
+        else if (loser.transform.GetChild(1).tag == "Player2")
+        {
+            canShootP2 = false;
+            canMissileP2 = false;
+        }
+
+        loser.transform.GetChild(0).gameObject.SetActive(false);
+        loser.transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
+        loser.transform.GetChild(1).GetComponent<CircleCollider2D>().enabled = false;
+        loser.transform.GetChild(3).GetComponent<SpriteRenderer>().enabled = false;
+
+        yield return new WaitForSeconds(4.0f);
+
+        for (int i = 0; i < ammoParent.transform.childCount; i++)
+            Destroy(ammoParent.transform.GetChild(i).gameObject);
+
+        if (loser.transform.GetChild(1).tag == "Player")
+        {
+            canShootP1 = true;
+            canMissileP1 = true;
+        }
+        else if (loser.transform.GetChild(1).tag == "Player2")
+        {
+            canShootP2 = true;
+            canMissileP2 = true;
+        }
+
+        loser.transform.GetChild(0).gameObject.SetActive(true);
+        loser.transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = true;
+        loser.transform.GetChild(1).GetComponent<CircleCollider2D>().enabled = true;
+        loser.transform.GetChild(3).GetComponent<SpriteRenderer>().enabled = true;
+
+        loser.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
+        maps.GetComponent<MapManager>().ChooseLevel();
     }
 
     public static void EndGame()

@@ -36,15 +36,13 @@ public class PlayerManager : MonoBehaviour
         {
             HP3.SetActive(false);
 
-            maps.GetComponent<MapManager>().ChooseLevel();
-            RegainShields();
+            StartCoroutine(gameManager.GetComponent<GameManagerScript>().EndRound(transform.parent.gameObject));
         }
         else if (hp == 1)
         {
             HP2.SetActive(false);
 
-            maps.GetComponent<MapManager>().ChooseLevel();
-            RegainShields();
+            StartCoroutine(gameManager.GetComponent<GameManagerScript>().EndRound(transform.parent.gameObject));
         }
         else if (hp == 0)
         {
@@ -54,7 +52,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void RegainShields()
+    public void RegainShields()
     {
         Transform shield = transform.parent.GetChild(0);
 
