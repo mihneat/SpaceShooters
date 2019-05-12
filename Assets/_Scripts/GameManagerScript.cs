@@ -26,7 +26,7 @@ public class GameManagerScript : MonoBehaviour
     private void Start()
     {
         mainCam = Camera.main;
-        Debug.Log(Input.GetJoystickNames()[0]);
+        // Debug.Log(Input.GetJoystickNames()[0]);
         shield1 = player1.transform.GetChild(0).gameObject;
         shield2 = player2.transform.GetChild(0).gameObject;
 
@@ -35,7 +35,7 @@ public class GameManagerScript : MonoBehaviour
         maps.GetComponent<MapManager>().ChooseLevel();
 
         StartCoroutine(DisableMissileP1());
-        //StartCoroutine(DisableMissileP2());
+        StartCoroutine(DisableMissileP2());
     }
 
     private void Update()
