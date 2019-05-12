@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject transition;
+    public GameObject transition, controlsPanel;
 
     private bool animIsPlaying = false;
 
@@ -30,5 +30,15 @@ public class MenuManager : MonoBehaviour
     public void Quit()
     {
         if (!animIsPlaying) Application.Quit();
+    }
+
+    public void Controls()
+    {
+        controlsPanel.SetActive(true);
+    }
+
+    public void CancerControls()
+    {
+        controlsPanel.SetActive(false);
     }
 }
