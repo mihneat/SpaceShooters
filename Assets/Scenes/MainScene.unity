@@ -3623,7 +3623,6 @@ GameObject:
   - component: {fileID: 521633546}
   - component: {fileID: 521633549}
   - component: {fileID: 521633548}
-  - component: {fileID: 521633547}
   m_Layer: 5
   m_Name: StartRoundText
   m_TagString: Untagged
@@ -3653,25 +3652,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 588.23, y: 78.600006}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &521633547
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 521633545}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9f1f5f7c1044c33409545ea1a7204f6b, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &521633548
 MonoBehaviour:
   m_ObjectHideFlags: 0
