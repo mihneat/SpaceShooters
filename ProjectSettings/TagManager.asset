@@ -9,6 +9,7 @@ TagManager:
   - Player2
   - Walls
   - MapWalls
+  - powerup
   layers:
   - Default
   - TransparentFX

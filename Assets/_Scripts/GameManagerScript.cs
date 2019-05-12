@@ -13,19 +13,20 @@ public class GameManagerScript : MonoBehaviour
     public GameObject spriteMask, spriteMask2;
     public GameObject maps;
     public GameObject ammoParent;
+    public GameObject[] powerUpPrefabs;
     public TMP_Text timeText, roundText;
     public GameObject victory1Text, victory2Text;
-    public float rotationSpeed, moveSpeed, missileCooldown;
-    
+    public float rotationSpeed, moveSpeed, moveSpeed2, missileCooldown, rateOfFire1, rateOfFire2, powerUpInterval;
+
     private Camera mainCam;
     private GameObject shield1, shield2;
-    private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true;
+    private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true, spawned = true;
     private float initialTime, elapsedSeconds, elapsedMinutes, elapsedHours;
 
     private void Start()
     {
         mainCam = Camera.main;
-
+        Debug.Log(Input.GetJoystickNames()[0]);
         shield1 = player1.transform.GetChild(0).gameObject;
         shield2 = player2.transform.GetChild(0).gameObject;
 
@@ -34,7 +35,7 @@ public class GameManagerScript : MonoBehaviour
         maps.GetComponent<MapManager>().ChooseLevel();
 
         StartCoroutine(DisableMissileP1());
-        StartCoroutine(DisableMissileP2());
+        //StartCoroutine(DisableMissileP2());
     }
 
     private void Update()
@@ -46,6 +47,13 @@ public class GameManagerScript : MonoBehaviour
         elapsedMinutes = (elapsedTime / 60) % 60;
         elapsedHours = (elapsedTime / 3600) % 60;
 
+        if ((elapsedSeconds ==  30 || elapsedSeconds == 59) && spawned)
+        {
+            StartCoroutine(boolDeTaran());
+            int index = Random.Range(0, powerUpPrefabs.Length - 1);
+            Instantiate(powerUpPrefabs[index]);
+        }
+            
         if (elapsedHours > 0) timeText.text = "You should probably stop playing.";
         else if (elapsedMinutes > 0) timeText.text = "Elasped Time:\n" + elapsedMinutes + "m " + elapsedSeconds + "s";
         else timeText.text = "Elasped Time:\n" + elapsedSeconds + "s";
@@ -124,7 +132,7 @@ public class GameManagerScript : MonoBehaviour
                 dirVer = 0.0f;
             }
         }
-        
+
         player1.transform.Translate(new Vector3(dirHor * moveSpeed, dirVer * moveSpeed, 0.0f) * Time.deltaTime * 50, Space.World);
 
         float x1, y1;
@@ -174,7 +182,7 @@ public class GameManagerScript : MonoBehaviour
 
         #region Player 2 Movement
 
-        if ((Input.GetAxis("JoystickTrigger") > 0 || Input.GetKey(KeyCode.Joystick1Button0))&& canShootP2)
+        if ((Input.GetAxis("JoystickTrigger") > 0 || Input.GetKey(KeyCode.Joystick1Button0)) && canShootP2)
         {
             StartCoroutine(DisableGunP2());
 
@@ -208,7 +216,7 @@ public class GameManagerScript : MonoBehaviour
 
 
         Vector3 translation = new Vector3(Input.GetAxisRaw("JoystickVertical") * -1, Input.GetAxisRaw("JoystickHorizontal") * -1, 0.0f);
-        translation *= (moveSpeed * Time.deltaTime * 40);
+        translation *= (moveSpeed2 * Time.deltaTime * 40);
         player2.transform.Translate(translation);
 
         //Vector2 dir2 = new Vector2(mousePos.x - player1.transform.position.x, mousePos.y - player1.transform.position.y);
@@ -216,7 +224,7 @@ public class GameManagerScript : MonoBehaviour
 
         player2Shoot.transform.position = new Vector2(player2.transform.position.x, player2.transform.position.y) + dir2;
         circle2.transform.up = dir2;
-        
+
 
         float x2, y2;
 
@@ -332,11 +340,54 @@ public class GameManagerScript : MonoBehaviour
         // SceneManager.LoadScene("MainScene");
     }
 
+    public void PowerUpFireRate(float increase, float duration, int player)
+    {
+        StartCoroutine(increaseFireRate(increase, duration, player));
+    }
+
+    public void SpeedIncrease(float increase, float duration, int player)
+    {
+        StartCoroutine(increaseSpeed(increase, duration, player));
+    }
+
+    IEnumerator boolDeTaran()
+    {
+        spawned = false;
+        yield return new WaitForSeconds(1f);
+        spawned = true;
+    }
+
+    IEnumerator increaseSpeed(float increase, float duration, int player)
+    {
+        if (player == 1)
+            moveSpeed += increase;
+        else
+            moveSpeed2 += increase;
+        yield return new WaitForSeconds(duration);
+        if (player == 1)
+            moveSpeed -= increase;
+        else
+            moveSpeed2 -= increase;
+    }
+
+    IEnumerator increaseFireRate(float increase, float duration, int player)
+    {
+        Debug.Log("hey" + increase + " " + player);
+        if (player == 1)
+            rateOfFire1 += increase;
+        else
+            rateOfFire2 += increase;
+        yield return new WaitForSeconds(duration);
+        if (player == 1)
+            rateOfFire1 -= increase;
+        else
+            rateOfFire2 -= increase;
+    }
     IEnumerator DisableGunP1()
     {
         canShootP1 = false;
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(rateOfFire1);
 
         canShootP1 = true;
     }
@@ -345,7 +396,7 @@ public class GameManagerScript : MonoBehaviour
     {
         canShootP2 = false;
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(rateOfFire2);
 
         canShootP2 = true;
     }
@@ -357,9 +408,9 @@ public class GameManagerScript : MonoBehaviour
         spriteMask.transform.parent.GetComponent<Animator>().Play("New Animation");
 
         yield return new WaitForSeconds(missileCooldown);
-        
+
         canMissileP1 = true;
-        
+
     }
 
     IEnumerator DisableMissileP2()
