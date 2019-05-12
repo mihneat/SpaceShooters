@@ -16,11 +16,13 @@ public class GameManagerScript : MonoBehaviour
     public GameObject[] powerUpPrefabs;
     public TMP_Text timeText, roundText;
     public GameObject victory1Text, victory2Text;
+    public GameObject StartRoundText;
     public float rotationSpeed, moveSpeed, moveSpeed2, missileCooldown, rateOfFire1, rateOfFire2, powerUpInterval;
 
     private Camera mainCam;
     private GameObject shield1, shield2;
     private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true, spawned = true, ThruWalls1 = false, ThruWalls2 = false;
+    private bool stopTime = false;
     private float initialTime, elapsedSeconds, elapsedMinutes, elapsedHours;
 
     private void Start()
@@ -34,6 +36,8 @@ public class GameManagerScript : MonoBehaviour
 
         maps.GetComponent<MapManager>().ChooseLevel();
 
+        StartRound();
+
         StartCoroutine(DisableMissileP1());
         StartCoroutine(DisableMissileP2());
     }
@@ -42,12 +46,15 @@ public class GameManagerScript : MonoBehaviour
     {
         roundText.text = "Round " + (maps.GetComponent<MapManager>().roundNumber - 1);
 
-        int elapsedTime = Mathf.FloorToInt(Time.time - initialTime);
-        elapsedSeconds = elapsedTime % 60;
-        elapsedMinutes = (elapsedTime / 60) % 60;
-        elapsedHours = (elapsedTime / 3600) % 60;
+        if (!stopTime)
+        {
+            int elapsedTime = Mathf.FloorToInt(Time.time - initialTime);
+            elapsedSeconds = elapsedTime % 60;
+            elapsedMinutes = (elapsedTime / 60) % 60;
+            elapsedHours = (elapsedTime / 3600) % 60;
+        }
 
-        if ((elapsedSeconds ==  5 || elapsedSeconds == 10 || elapsedSeconds == 15 || elapsedSeconds == 20 || elapsedSeconds == 25 || elapsedSeconds == 30) && spawned)
+        if ((elapsedSeconds == 30 || elapsedSeconds == 59) && spawned && !stopTime)
         {
             StartCoroutine(boolDeTaran());
             int index = Random.Range(0, powerUpPrefabs.Length);
@@ -66,14 +73,14 @@ public class GameManagerScript : MonoBehaviour
 
                 instantiatedThing.GetComponent<PowerUpBehaviour>().randomNumber = 1;
             }
-            
         }
-            
-        if (elapsedHours > 0) timeText.text = "You should probably stop playing.";
-        else if (elapsedMinutes > 0) timeText.text = "Elasped Time:\n" + elapsedMinutes + "m " + elapsedSeconds + "s";
-        else timeText.text = "Elasped Time:\n" + elapsedSeconds + "s";
 
-
+        if (!stopTime)
+        {
+            if (elapsedHours > 0) timeText.text = "You should probably stop playing.";
+            else if (elapsedMinutes > 0) timeText.text = "Elasped Time:\n" + elapsedMinutes + "m " + elapsedSeconds + "s";
+            else timeText.text = "Elasped Time:\n" + elapsedSeconds + "s";
+        }
 
         if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
         if (Input.GetKeyDown(KeyCode.U)) SceneManager.LoadScene("MenuScene");
@@ -81,7 +88,7 @@ public class GameManagerScript : MonoBehaviour
 
         #region Player 1 Movement
 
-        if (Input.GetKey(KeyCode.Mouse0) && canShootP1)
+        if (Input.GetKey(KeyCode.Mouse0) && canShootP1 && !stopTime)
         {
             StartCoroutine(DisableGunP1());
 
@@ -96,7 +103,7 @@ public class GameManagerScript : MonoBehaviour
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(0.0f, 1.0f, 0.0f, 0.25f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1) && canMissileP1)
+        if (Input.GetKeyDown(KeyCode.Mouse1) && canMissileP1 && !stopTime)
         {
             StartCoroutine(DisableMissileP1());
 
@@ -111,7 +118,7 @@ public class GameManagerScript : MonoBehaviour
 
         float dirHor, dirVer;
 
-        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D) )
         {
             dirHor = 0.0f;
         }
@@ -198,7 +205,7 @@ public class GameManagerScript : MonoBehaviour
 
         #region Player 2 Movement
 
-        if ((Input.GetAxis("JoystickTrigger") > 0 || Input.GetKey(KeyCode.Joystick1Button0)) && canShootP2)
+        if ((Input.GetAxis("JoystickTrigger") > 0 || Input.GetKey(KeyCode.Joystick1Button0)) && canShootP2 && !stopTime)
         {
             StartCoroutine(DisableGunP2());
 
@@ -214,7 +221,7 @@ public class GameManagerScript : MonoBehaviour
             //instantiatedBullet.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
         }
 
-        if (Input.GetAxis("JoystickLTrigger") > 0 && canMissileP2)
+        if (Input.GetAxis("JoystickLTrigger") > 0 && canMissileP2 && !stopTime)
         {
             StartCoroutine(DisableMissileP2());
 
@@ -279,6 +286,22 @@ public class GameManagerScript : MonoBehaviour
     {
         player1.transform.position = player1Spawn.transform.position;
         player2.transform.position = player2Spawn.transform.position;
+
+        StartCoroutine(StartTheRound());
+    }
+
+    IEnumerator StartTheRound()
+    {
+        stopTime = true;
+        timeText.text = "Elasped Time:\n" + "0s";
+
+        StartRoundText.GetComponent<Animator>().Play("Animation");
+
+        yield return new WaitForSeconds(3.0f);
+
+        initialTime = Time.time;
+
+        stopTime = false;
     }
 
     public IEnumerator EndRound(GameObject loser)
@@ -299,6 +322,8 @@ public class GameManagerScript : MonoBehaviour
         loser.transform.GetChild(0).gameObject.SetActive(false);
         loser.transform.GetChild(1).GetComponent<SpriteRenderer>().enabled = false;
         loser.transform.GetChild(1).GetComponent<CircleCollider2D>().enabled = false;
+
+        stopTime = true;
 
         yield return new WaitForSeconds(4.0f);
 
