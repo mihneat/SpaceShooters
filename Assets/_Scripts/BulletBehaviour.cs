@@ -7,6 +7,8 @@ public class BulletBehaviour : MonoBehaviour
     public float speed;
     public int playerToKill;
 
+    public bool ThruWalls = false;
+
     private GameObject colliderObj;
 
     private void Start()
@@ -60,7 +62,7 @@ public class BulletBehaviour : MonoBehaviour
 
             Destroy(gameObject);
         }
-        else if (collision.gameObject.tag == "MapWalls")
+        else if (collision.gameObject.tag == "MapWalls" && !ThruWalls)
         {
             Destroy(gameObject);
         }

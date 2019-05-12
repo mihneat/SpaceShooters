@@ -31,6 +31,10 @@ public class PowerUpBehaviour : MonoBehaviour
             gms.PowerUpFireRate(increase, duration, player);
         else if (type == 2)
             gms.SpeedIncrease(increase, duration, player);
+        else if (type == 3)
+            gms.ShieldRegenPowerUp(player);
+        else if (type == 4)
+            gms.ActivateThroughWalls(duration, player);
     }
 
 

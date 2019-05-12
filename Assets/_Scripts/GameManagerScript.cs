@@ -20,7 +20,7 @@ public class GameManagerScript : MonoBehaviour
 
     private Camera mainCam;
     private GameObject shield1, shield2;
-    private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true, spawned = true;
+    private bool canShootP1 = true, canShootP2 = true, canMissileP1 = true, canMissileP2 = true, spawned = true, ThruWalls1 = false, ThruWalls2 = false;
     private float initialTime, elapsedSeconds, elapsedMinutes, elapsedHours;
 
     private void Start()
@@ -50,7 +50,7 @@ public class GameManagerScript : MonoBehaviour
         if ((elapsedSeconds ==  30 || elapsedSeconds == 59) && spawned)
         {
             StartCoroutine(boolDeTaran());
-            int index = Random.Range(0, powerUpPrefabs.Length - 1);
+            int index = Random.Range(0, powerUpPrefabs.Length);
             Instantiate(powerUpPrefabs[index]);
         }
             
@@ -76,6 +76,7 @@ public class GameManagerScript : MonoBehaviour
 
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 2;
+            instantiatedBullet.GetComponent<BulletBehaviour>().ThruWalls = ThruWalls1;
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.5f);
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(0.0f, 1.0f, 0.0f, 0.25f);
         }
@@ -192,6 +193,7 @@ public class GameManagerScript : MonoBehaviour
             // instantiatedBullet.GetComponent<BulletBehaviour>().speed *= -1;
             instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f, 1.0f);
             instantiatedBullet.GetComponent<BulletBehaviour>().playerToKill = 1;
+            instantiatedBullet.GetComponent<BulletBehaviour>().ThruWalls = ThruWalls2;
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.5f);
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
             //instantiatedBullet.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
@@ -350,6 +352,31 @@ public class GameManagerScript : MonoBehaviour
         StartCoroutine(increaseSpeed(increase, duration, player));
     }
 
+    public void ShieldRegenPowerUp(int player)
+    {
+        if (player == 1)
+            player1.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
+        else
+            player2.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
+    }
+
+    public void ActivateThroughWalls(float duration, int player)
+    {
+        StartCoroutine(activateThroughWalls(duration, player));
+    }
+
+    IEnumerator activateThroughWalls(float duration, int player)
+    {
+        if (player == 1)
+            ThruWalls1 = true;
+        else
+            ThruWalls2 = true;
+        yield return new WaitForSeconds(duration);
+        if (player == 1)
+            ThruWalls1 = false;
+        else
+            ThruWalls2 = false;
+    }
     IEnumerator boolDeTaran()
     {
         spawned = false;
