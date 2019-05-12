@@ -10,7 +10,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject player1Spawn, player2Spawn;
     public GameObject player1Shoot, player2Shoot;
     public GameObject bullet, missile, gun1, gun2, circle2;
-    public GameObject spriteMask;
+    public GameObject spriteMask, spriteMask2;
     public GameObject maps;
     public GameObject ammoParent;
     public TMP_Text timeText, roundText;
@@ -34,6 +34,7 @@ public class GameManagerScript : MonoBehaviour
         maps.GetComponent<MapManager>().ChooseLevel();
 
         StartCoroutine(DisableMissileP1());
+        StartCoroutine(DisableMissileP2());
     }
 
     private void Update()
@@ -186,6 +187,21 @@ public class GameManagerScript : MonoBehaviour
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.5f);
             instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
             //instantiatedBullet.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
+        }
+
+        if (Input.GetAxis("JoystickLTrigger") > 0 && canMissileP2)
+        {
+            StartCoroutine(DisableMissileP2());
+
+            Quaternion missileRotation = circle2.transform.rotation;
+            missileRotation.z -= 90;
+            GameObject instantiatedBullet = Instantiate(missile, player2Shoot.transform.position, missileRotation, ammoParent.transform);
+
+            instantiatedBullet.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f, 1.0f);
+            instantiatedBullet.GetComponent<MissileBehaviour>().enemy = player1;
+            instantiatedBullet.GetComponent<MissileBehaviour>().playerToKill = 1;
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.5f);
+            instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().endColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
         }
 
         // instantiatedBullet.transform.GetChild(0).GetComponent<TrailRenderer>().startColor = new Color(1.0f, 0.0f, 1.0f, 0.25f);
@@ -349,6 +365,7 @@ public class GameManagerScript : MonoBehaviour
     IEnumerator DisableMissileP2()
     {
         canMissileP2 = false;
+        spriteMask2.transform.parent.GetComponent<Animator>().Play("New Animation");
         yield return new WaitForSeconds(missileCooldown);
         canMissileP2 = true;
     }

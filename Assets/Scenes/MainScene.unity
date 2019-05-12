@@ -7806,6 +7806,7 @@ MonoBehaviour:
   gun2: {fileID: 1543060240}
   circle2: {fileID: 1828075238}
   spriteMask: {fileID: 2113844067}
+  spriteMask2: {fileID: 989366894}
   maps: {fileID: 1794127955}
   ammoParent: {fileID: 1105525380}
   timeText: {fileID: 666088424}
