@@ -117,6 +117,9 @@ MonoBehaviour:
   frequency: 5
   magnitude: 0.5
   gm: {fileID: 0}
+  spriteToReplaceWith: {fileID: 21300000, guid: 2ee2939d5485cf644a13893141bfcda7,
+    type: 3}
+  spriteColor: {r: 0.30980393, g: 0.30980393, b: 0.30980393, a: 1}
 --- !u!1 &6392872261132089568
 GameObject:
   m_ObjectHideFlags: 0

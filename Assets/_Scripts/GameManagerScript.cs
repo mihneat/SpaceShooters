@@ -47,11 +47,26 @@ public class GameManagerScript : MonoBehaviour
         elapsedMinutes = (elapsedTime / 60) % 60;
         elapsedHours = (elapsedTime / 3600) % 60;
 
-        if ((elapsedSeconds ==  30 || elapsedSeconds == 59) && spawned)
+        if ((elapsedSeconds ==  5 || elapsedSeconds == 10 || elapsedSeconds == 15 || elapsedSeconds == 20 || elapsedSeconds == 25 || elapsedSeconds == 30) && spawned)
         {
             StartCoroutine(boolDeTaran());
             int index = Random.Range(0, powerUpPrefabs.Length);
-            Instantiate(powerUpPrefabs[index]);
+
+            int randomNumber = Random.Range(0, 2);
+
+            if (randomNumber == 0)
+            {
+                GameObject instantiatedThing = Instantiate(powerUpPrefabs[index], new Vector3(-4.95f, 11.46f, 0.0f), Quaternion.identity);
+
+                instantiatedThing.GetComponent<PowerUpBehaviour>().randomNumber = 0;
+            }
+            else
+            {
+                GameObject instantiatedThing = Instantiate(powerUpPrefabs[index], new Vector3(-4.95f, -11.46f, 0.0f), Quaternion.identity);
+
+                instantiatedThing.GetComponent<PowerUpBehaviour>().randomNumber = 1;
+            }
+            
         }
             
         if (elapsedHours > 0) timeText.text = "You should probably stop playing.";
@@ -342,30 +357,32 @@ public class GameManagerScript : MonoBehaviour
         // SceneManager.LoadScene("MainScene");
     }
 
-    public void PowerUpFireRate(float increase, float duration, int player)
+    public void PowerUpFireRate(float increase, float duration, int player, GameObject abilityObj)
     {
-        StartCoroutine(increaseFireRate(increase, duration, player));
+        StartCoroutine(increaseFireRate(increase, duration, player, abilityObj));
     }
 
-    public void SpeedIncrease(float increase, float duration, int player)
+    public void SpeedIncrease(float increase, float duration, int player, GameObject abilityObj)
     {
-        StartCoroutine(increaseSpeed(increase, duration, player));
+        StartCoroutine(increaseSpeed(increase, duration, player, abilityObj));
     }
 
-    public void ShieldRegenPowerUp(int player)
+    public void ShieldRegenPowerUp(int player, GameObject abilityObj)
     {
         if (player == 1)
             player1.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
         else
             player2.transform.GetChild(1).GetComponent<PlayerManager>().RegainShields();
+
+        StartCoroutine(regainShieldslol(abilityObj));
     }
 
-    public void ActivateThroughWalls(float duration, int player)
+    public void ActivateThroughWalls(float duration, int player, GameObject abilityObj)
     {
-        StartCoroutine(activateThroughWalls(duration, player));
+        StartCoroutine(activateThroughWalls(duration, player, abilityObj));
     }
 
-    IEnumerator activateThroughWalls(float duration, int player)
+    IEnumerator activateThroughWalls(float duration, int player, GameObject abilityObj)
     {
         if (player == 1)
             ThruWalls1 = true;
@@ -376,6 +393,9 @@ public class GameManagerScript : MonoBehaviour
             ThruWalls1 = false;
         else
             ThruWalls2 = false;
+
+        Color col = abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color;
+        abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color = new Color(col.r, col.g, col.b, 0.0f);
     }
     IEnumerator boolDeTaran()
     {
@@ -384,7 +404,7 @@ public class GameManagerScript : MonoBehaviour
         spawned = true;
     }
 
-    IEnumerator increaseSpeed(float increase, float duration, int player)
+    IEnumerator increaseSpeed(float increase, float duration, int player, GameObject abilityObj)
     {
         if (player == 1)
             moveSpeed += increase;
@@ -395,9 +415,12 @@ public class GameManagerScript : MonoBehaviour
             moveSpeed -= increase;
         else
             moveSpeed2 -= increase;
+
+        Color col = abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color;
+        abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color = new Color(col.r, col.g, col.b, 0.0f);
     }
 
-    IEnumerator increaseFireRate(float increase, float duration, int player)
+    IEnumerator increaseFireRate(float increase, float duration, int player, GameObject abilityObj)
     {
         Debug.Log("hey" + increase + " " + player);
         if (player == 1)
@@ -409,7 +432,20 @@ public class GameManagerScript : MonoBehaviour
             rateOfFire1 -= increase;
         else
             rateOfFire2 -= increase;
+
+        Color col = abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color;
+        abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color = new Color(col.r, col.g, col.b, 0.0f);
     }
+
+    IEnumerator regainShieldslol(GameObject abilityObj)
+    {
+        yield return new WaitForSeconds(4.0f);
+
+        Color col = abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color;
+        abilityObj.transform.GetChild(4).GetComponent<SpriteRenderer>().color = new Color(col.r, col.g, col.b, 0.0f);
+    }
+
+
     IEnumerator DisableGunP1()
     {
         canShootP1 = false;
