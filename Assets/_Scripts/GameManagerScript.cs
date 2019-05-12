@@ -295,7 +295,7 @@ public class GameManagerScript : MonoBehaviour
         stopTime = true;
         timeText.text = "Elasped Time:\n" + "0s";
 
-        StartRoundText.GetComponent<Animator>().Play("Animation");
+       // StartRoundText.GetComponent<Animator>().Play("Animation");
 
         yield return new WaitForSeconds(3.0f);
 
