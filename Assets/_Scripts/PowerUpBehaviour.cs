@@ -28,7 +28,9 @@ public class PowerUpBehaviour : MonoBehaviour
     public void Activate(int player)
     {
         if (type == 1)
+        {
             gms.PowerUpFireRate(increase, duration, player);
+        }
         else if (type == 2)
             gms.SpeedIncrease(increase, duration, player);
         else if (type == 3)
